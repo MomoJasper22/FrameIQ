@@ -1,0 +1,1242 @@
+/* ============================================================
+   PAGE REPLACEMENT ALGORITHM SIMULATOR - STYLES
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Respect the user's browser zoom level on iOS / Safari instead of
+     forcing a smaller "auto" adjustment, so layout scales predictably
+     when the user zooms in or out. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ============================================================
+   CSS VARIABLES FOR THEME SWITCHING
+   ============================================================ */
+
+:root {
+  /* Dark theme (default) */
+  --bg-primary: #0b0f1a;
+  --bg-secondary: #111827;
+  --bg-card: rgba(17, 24, 39, 0.65);
+  --bg-card-hover: rgba(17, 24, 39, 0.9);
+  --bg-input: rgba(17, 24, 39, 0.85);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-white: #f8fafc;
+  --summary-metric-color: #f8fafc;
+  --border-color: rgba(148, 163, 184, 0.08);
+  --border-color-strong: rgba(148, 163, 184, 0.15);
+  --border-input: #334155;
+  --scroll-track: #1e293b;
+  --scroll-thumb: #475569;
+  --scroll-thumb-hover: #64748b;
+  --tooltip-bg: #1e293b;
+  --tooltip-text: #e2e8f0;
+  --header-badge-bg: rgba(99, 102, 241, 0.12);
+  --header-badge-border: rgba(99, 102, 241, 0.25);
+  --header-badge-text: #a5b4fc;
+  --subtitle-text: #94a3b8;
+  --label-text: #e2e8f0;
+  --helper-text: #64748b;
+  --preset-bg: rgba(30, 41, 59, 0.6);
+  --preset-hover-bg: rgba(99, 102, 241, 0.2);
+  --preset-text: #94a3b8;
+  --preset-hover-text: #a5b4fc;
+  --preset-border: #334155;
+  --preset-hover-border: rgba(99, 102, 241, 0.5);
+  --section-border: rgba(51, 65, 85, 0.4);
+  --algo-name-text: #f1f5f9;
+  --algo-desc-text: #94a3b8;
+  --algo-icon: #64748b;
+  --radio-border: #64748b;
+  --loading-text: #94a3b8;
+  --footer-text: #475569;
+  --footer-border: rgba(30, 41, 59, 0.5);
+  --table-header-text: #64748b;
+  --ref-cell-bg: rgba(51, 65, 85, 0.45);
+  --ref-cell-border: #475569;
+  --frame-empty-bg: rgba(30, 41, 59, 0.35);
+  --frame-empty-border: rgba(71, 85, 105, 0.4);
+  --frame-empty-text: #475569;
+  --frame-filled-bg: rgba(51, 65, 85, 0.5);
+  --frame-filled-border: rgba(100, 116, 139, 0.4);
+  --frame-filled-text: var(--text-white);
+  --new-cell-bg: rgba(99, 102, 241, 0.2);
+  --new-cell-border: rgba(99, 102, 241, 0.55);
+  --new-cell-text: #c7d2fe;
+  --hit-cell-bg: rgba(34, 197, 94, 0.18);
+  --hit-cell-border: rgba(34, 197, 94, 0.5);
+  --hit-cell-text: #86efac;
+  --fault-cell-bg: rgba(239, 68, 68, 0.18);
+  --fault-cell-border: rgba(239, 68, 68, 0.5);
+  --fault-cell-text: #fca5a5;
+  --queue-hit-bg: rgba(234, 179, 8, 0.22);
+  --queue-hit-border: rgba(234, 179, 8, 0.7);
+  --queue-hit-text: #ffffff;
+  --algo-title-text: #a5b4fc;
+  --algo-body-text: #cbd5e1;
+  --explanation-border: #6366f1;
+  --explanation-bg-start: rgba(99, 102, 241, 0.08);
+  --explanation-bg-end: rgba(17, 24, 39, 0.4);
+  --error-toast-bg: rgba(220, 38, 38, 0.92);
+  --info-icon: #475569;
+  --grid-color: rgba(99, 102, 241, 0.07);
+  --legend-text-hit: #34d399;
+  --legend-text-fault: #f87171;
+  --legend-text-new: #818cf8;
+  --legend-text-secondary: #64748b;
+  --card-hit-label: #6ee7b7;
+  --card-hit-accent: #34d399;
+  --card-hit-caption: rgba(16, 185, 129, 0.6);
+  --card-fault-label: #fca5a5;
+  --card-fault-accent: #f87171;
+  --card-fault-caption: rgba(239, 68, 68, 0.6);
+  --card-ratio-hit-label: #5eead4;
+  --card-ratio-hit-accent: #2dd4bf;
+  --card-ratio-hit-caption: rgba(20, 184, 166, 0.6);
+  --card-ratio-fault-label: #fdba74;
+  --card-ratio-fault-accent: #fb923c;
+  --card-ratio-fault-caption: rgba(249, 115, 22, 0.6);
+  --input-icon: #475569;
+  --btn-reset-text: #94a3b8;
+  --btn-reset-border: #334155;
+  --btn-reset-bg: rgba(30, 41, 59, 0.6);
+  --btn-reset-hover-text: #f87171;
+  --btn-reset-hover-border: rgba(239, 68, 68, 0.4);
+  --btn-reset-hover-bg: rgba(239, 68, 68, 0.12);
+  --front-cell-bg: rgba(239, 68, 68, 0.22);
+  --front-cell-border: rgba(239, 68, 68, 0.65);
+  --front-cell-text: #fca5a5;
+  --back-cell-bg: rgba(34, 197, 94, 0.15);
+  --back-cell-border: rgba(34, 197, 94, 0.45);
+  --back-cell-text: #86efac;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: rgba(255, 255, 255, 1);
+  --bg-input: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #1e293b;
+  --text-muted: #475569;
+  --text-white: #0f172a;
+  --summary-metric-color: #000000;
+  --border-color: rgba(148, 163, 184, 0.3);
+  --border-color-strong: rgba(148, 163, 184, 0.5);
+  --border-input: #94a3b8;
+  --scroll-track: #e2e8f0;
+  --scroll-thumb: #64748b;
+  --scroll-thumb-hover: #475569;
+  --tooltip-bg: #1e293b;
+  --tooltip-text: #f8fafc;
+  --header-badge-bg: rgba(99, 102, 241, 0.15);
+  --header-badge-border: rgba(99, 102, 241, 0.3);
+  --header-badge-text: #3730a3;
+  --subtitle-text: #334155;
+  --label-text: #0f172a;
+  --helper-text: #334155;
+  --preset-bg: rgba(241, 245, 249, 1);
+  --preset-hover-bg: rgba(99, 102, 241, 0.15);
+  --preset-text: #334155;
+  --preset-hover-text: #3730a3;
+  --preset-border: #94a3b8;
+  --preset-hover-border: rgba(99, 102, 241, 0.6);
+  --section-border: rgba(148, 163, 184, 0.6);
+  --algo-name-text: #0f172a;
+  --algo-desc-text: #334155;
+  --algo-icon: #64748b;
+  --radio-border: #64748b;
+  --loading-text: #334155;
+  --footer-text: #475569;
+  --footer-border: rgba(148, 163, 184, 0.6);
+  --table-header-text: #334155;
+  --ref-cell-bg: rgba(226, 232, 240, 1);
+  --ref-cell-border: #94a3b8;
+  --frame-empty-bg: rgba(241, 245, 249, 1);
+  --frame-empty-border: rgba(148, 163, 184, 0.6);
+  --frame-empty-text: #475569;
+  --frame-filled-bg: rgba(241, 245, 249, 1);
+  --frame-filled-border: rgba(100, 116, 139, 0.6);
+  --frame-filled-text: var(--text-white);
+  --new-cell-bg: rgba(99, 102, 241, 0.18);
+  --new-cell-border: rgba(99, 102, 241, 0.6);
+  --new-cell-text: #3730a3;
+  --hit-cell-bg: rgba(34, 197, 94, 0.18);
+  --hit-cell-border: rgba(34, 197, 94, 0.6);
+  --hit-cell-text: #065f46;
+  --fault-cell-bg: rgba(239, 68, 68, 0.18);
+  --fault-cell-border: rgba(239, 68, 68, 0.6);
+  --fault-cell-text: #991b1b;
+  --queue-hit-bg: rgba(234, 179, 8, 0.3);
+  --queue-hit-border: rgba(202, 138, 4, 0.8);
+  --queue-hit-text: #000000;
+  --algo-title-text: #3730a3;
+  --algo-body-text: #1e293b;
+  --explanation-border: #4f46e5;
+  --explanation-bg-start: rgba(99, 102, 241, 0.1);
+  --explanation-bg-end: rgba(255, 255, 255, 0.8);
+  --error-toast-bg: rgba(185, 28, 28, 0.95);
+  --info-icon: #64748b;
+  --grid-color: rgba(99, 102, 241, 0.1);
+  --legend-text-hit: #047857;
+  --legend-text-fault: #b91c1c;
+  --legend-text-new: #3730a3;
+  --legend-text-secondary: #475569;
+  --card-hit-label: #065f46;
+  --card-hit-accent: #047857;
+  --card-hit-caption: #047857;
+  --card-fault-label: #991b1b;
+  --card-fault-accent: #b91c1c;
+  --card-fault-caption: #991b1b;
+  --card-ratio-hit-label: #0f766e;
+  --card-ratio-hit-accent: #0d9488;
+  --card-ratio-hit-caption: #0f766e;
+  --card-ratio-fault-label: #9a3412;
+  --card-ratio-fault-accent: #c2410c;
+  --card-ratio-fault-caption: #9a3412;
+  --input-icon: #64748b;
+  --btn-reset-text: #334155;
+  --btn-reset-border: #94a3b8;
+  --btn-reset-bg: #ffffff;
+  --btn-reset-hover-text: #b91c1c;
+  --btn-reset-hover-border: rgba(239, 68, 68, 0.6);
+  --btn-reset-hover-bg: rgba(239, 68, 68, 0.12);
+  --front-cell-bg: rgba(239, 68, 68, 0.2);
+  --front-cell-border: rgba(239, 68, 68, 0.7);
+  --front-cell-text: #991b1b;
+  --back-cell-bg: rgba(34, 197, 94, 0.15);
+  --back-cell-border: rgba(34, 197, 94, 0.6);
+  --back-cell-text: #065f46;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+
+
+/* Inputs: enforce a minimum 1rem font size so iOS Safari does NOT
+   auto-zoom the viewport when the user focuses a text field. This also
+   keeps inputs readable at extreme zoom-out levels. */
+input,
+textarea,
+select,
+button {
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes cellReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotateY(90deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+}
+
+@keyframes pulseGlowRed {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes borderPulse {
+  0%, 100% { border-color: rgba(99, 102, 241, 0.3); }
+  50% { border-color: rgba(99, 102, 241, 0.8); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out forwards;
+}
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+.animate-cell-reveal {
+  animation: cellReveal 0.4s ease-out forwards;
+}
+
+.cell-enter {
+  animation: cellReveal 0.35s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+.animate-pulse-glow-red {
+  animation: pulseGlowRed 2s infinite;
+}
+
+/* Staggered animation delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.10s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* ============================================================
+   GLASSMORPHISM CARD
+   ============================================================ */
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.glass-card-hover:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* ============================================================
+   INPUT STYLES
+   ============================================================ */
+
+.input-glow:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+.frame-input {
+  background: var(--bg-input);
+  border-color: var(--border-input);
+  color: var(--text-primary);
+}
+
+.ref-input {
+  background: var(--bg-input);
+  border-color: var(--border-input);
+  color: var(--text-primary);
+}
+
+.input-icon {
+  color: var(--input-icon);
+}
+
+/* ============================================================
+   THEME-AWARE UTILITY CLASSES
+   ============================================================ */
+
+.header-title {
+  color: var(--text-white);
+}
+
+.subtitle-text {
+  color: var(--subtitle-text);
+}
+
+.section-title {
+  color: var(--text-white);
+}
+
+.label-text {
+  color: var(--label-text);
+}
+
+.helper-text {
+  color: var(--helper-text);
+}
+
+.info-icon {
+  color: var(--info-icon);
+}
+
+.loading-text {
+  color: var(--loading-text);
+}
+
+.footer-text {
+  color: var(--footer-text);
+  border-top: 1px solid var(--footer-border);
+}
+
+.footer-subtext {
+  color: var(--helper-text);
+}
+
+.algo-name {
+  color: var(--algo-name-text);
+}
+
+.algo-desc {
+  color: var(--algo-desc-text);
+}
+
+.algo-icon {
+  color: var(--algo-icon);
+}
+
+.algo-title-text {
+  color: var(--algo-title-text);
+}
+
+.algo-body-text {
+  color: var(--algo-body-text);
+}
+
+.legend-text-hit {
+  color: var(--legend-text-hit);
+}
+
+.legend-text-fault {
+  color: var(--legend-text-fault);
+}
+
+.legend-text-new {
+  color: var(--legend-text-new);
+}
+
+.legend-text-secondary {
+  color: var(--legend-text-secondary);
+}
+
+.new-cell-text {
+  color: var(--summary-metric-color);
+}
+
+.card-hit-label {
+  color: var(--card-hit-label);
+}
+
+.card-hit-accent {
+  color: var(--summary-metric-color);
+}
+
+.card-hit-caption {
+  color: var(--card-hit-caption);
+}
+
+.card-fault-label {
+  color: var(--card-fault-label);
+}
+
+.card-fault-accent {
+  color: var(--summary-metric-color);
+}
+
+.card-fault-caption {
+  color: var(--card-fault-caption);
+}
+
+.card-ratio-hit-label {
+  color: var(--card-ratio-hit-label);
+}
+
+.card-ratio-hit-accent {
+  color: var(--summary-metric-color);
+}
+
+.card-ratio-hit-caption {
+  color: var(--card-ratio-hit-caption);
+}
+
+.card-ratio-fault-label {
+  color: var(--card-ratio-fault-label);
+}
+
+.card-ratio-fault-accent {
+  color: var(--summary-metric-color);
+}
+
+.card-ratio-fault-caption {
+  color: var(--card-ratio-fault-caption);
+}
+
+/* ============================================================
+   TABLE STYLES
+   ============================================================ */
+
+.sim-cell {
+  transition: all 0.3s ease;
+}
+.sim-cell:hover {
+  transform: translateY(-2px);
+}
+
+.table-container {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* ============================================================
+   SUMMARY CARD STYLES
+   ============================================================ */
+
+.card-hit {
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.06) 0%, var(--bg-card) 100%);
+}
+.card-hit:hover {
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.12);
+}
+
+.card-fault {
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.06) 0%, var(--bg-card) 100%);
+}
+.card-fault:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.12);
+}
+
+.card-ratio-hit {
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, var(--bg-card) 100%);
+}
+.card-ratio-hit:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.12);
+}
+
+.card-ratio-fault {
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.06) 0%, var(--bg-card) 100%);
+}
+.card-ratio-fault:hover {
+  border-color: rgba(249, 115, 22, 0.5);
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.12);
+}
+
+/* ============================================================
+   ALGORITHM SELECTION CARD
+   ============================================================ */
+
+.algo-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.algo-card:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+.algo-card.selected {
+  border-color: rgb(99, 102, 241);
+  background: rgba(99, 102, 241, 0.1);
+}
+.algo-card.selected .algo-radio {
+  background: rgb(99, 102, 241);
+  border-color: rgb(99, 102, 241);
+}
+.algo-card.selected .algo-radio::after {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.algo-radio {
+  transition: all 0.3s ease;
+  border-color: var(--radio-border);
+}
+
+/* ============================================================
+   GRADIENT TEXT & BACKGROUND
+   ============================================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-grid {
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--grid-color) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+.bg-gradient-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   TOOLTIP
+   ============================================================ */
+
+.tooltip-container {
+  position: relative;
+}
+.tooltip-container .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  border: 1px solid var(--border-color-strong);
+  transition: all 0.2s ease;
+  z-index: 50;
+}
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+.btn-primary:hover::before {
+  left: 100%;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-reset {
+  transition: all 0.3s ease;
+  color: var(--btn-reset-text);
+  border-color: var(--btn-reset-border);
+  background: var(--btn-reset-bg);
+}
+.btn-reset:hover {
+  background: var(--btn-reset-hover-bg);
+  border-color: var(--btn-reset-hover-border);
+  color: var(--btn-reset-hover-text);
+}
+
+/* Action bar divider */
+.action-bar {
+  border-top: 1px solid var(--section-border);
+}
+
+/* Preset buttons */
+.preset-btn {
+  background: var(--preset-bg);
+  color: var(--preset-text);
+  border: 1px solid var(--preset-border);
+}
+.preset-btn:hover {
+  background: var(--preset-hover-bg);
+  color: var(--preset-hover-text);
+  border-color: var(--preset-hover-border);
+}
+
+/* Reset type button */
+.reset-type-btn {
+  color: var(--helper-text);
+}
+
+/* Step-by-step playback controls - high contrast for both themes */
+#stepInput {
+  background: var(--bg-input);
+  border-color: var(--border-input);
+  color: var(--text-primary);
+}
+
+#stepTotal {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   EXPLANATION BOX
+   ============================================================ */
+
+.explanation-box {
+  border-left: 3px solid var(--explanation-border);
+  background: linear-gradient(135deg, var(--explanation-bg-start) 0%, var(--explanation-bg-end) 100%);
+}
+
+/* ============================================================
+   LEGEND DOT
+   ============================================================ */
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ============================================================
+   INITIAL HIDDEN STATE FOR ANIMATION
+   ============================================================ */
+
+#resultsSection {
+  transition: opacity 0.3s ease;
+}
+
+.hidden-initial {
+  display: none;
+  opacity: 0;
+}
+
+
+
+/* ============================================================
+   LOGO PLACEHOLDER
+   Drop your photo in the project root as "logoGroup2" (any
+   extension). The placeholder shows the image if found, otherwise
+   falls back to a gradient icon.
+   ============================================================ */
+
+.logo-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  position: relative;
+  z-index: 20;
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.logo-fallback {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  font-size: 2.5rem;
+}
+
+.logo-fallback::before {
+  content: '\f5fc';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+}
+
+/* ============================================================
+   THEME TOGGLE BUTTON
+   (Positioning / sizing is defined in the ZOOM-ADAPTIVE LAYOUT
+   section further down so the toggle scales with browser zoom.)
+   ============================================================ */
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #6366f1;
+}
+.theme-toggle:active {
+  transform: translateY(0);
+}
+
+/* ============================================================
+   VALIDATION ERROR SHAKE
+   ============================================================ */
+
+.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* ============================================================
+   MODE INDICATOR BADGE
+   ============================================================ */
+
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.mode-numeric {
+  background: rgba(99, 102, 241, 0.15);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+.mode-alphabet {
+  background: rgba(139, 92, 246, 0.15);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+.mode-empty {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+[data-theme="light"] .mode-numeric {
+  background: rgba(99, 102, 241, 0.18);
+  color: #3730a3;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+}
+[data-theme="light"] .mode-alphabet {
+  background: rgba(139, 92, 246, 0.18);
+  color: #5b21b6;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+[data-theme="light"] .mode-empty {
+  background: rgba(148, 163, 184, 0.25);
+  color: #334155;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+/* ============================================================
+   QUEUE TRACKER - FRONT/BACK INDICATORS
+   ============================================================ */
+
+.queue-front-cell {
+  background: var(--front-cell-bg) !important;
+  border-color: var(--front-cell-border) !important;
+  color: var(--front-cell-text) !important;
+  font-weight: 700;
+}
+
+.queue-back-cell {
+  background: var(--back-cell-bg) !important;
+  border-color: var(--back-cell-border) !important;
+  color: var(--back-cell-text) !important;
+}
+
+.queue-middle-cell {
+  background: var(--frame-filled-bg);
+  border-color: var(--frame-filled-border);
+  color: var(--frame-filled-text);
+}
+
+/* Queue position labels */
+.queue-position-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+/* ============================================================
+   ZOOM-ADAPTIVE LAYOUT
+   - Browser zoom levels affect the entire page proportionally when
+     everything is in rem. This section covers the remaining edge
+     cases: card headers that would overflow at high zoom, the theme
+     toggle that could overlap content, and stacking breakpoints.
+   ============================================================ */
+
+/* Card headers: when zoom is very high the label can run out of space
+   next to the icon. Allow the row to wrap instead of overflowing. */
+.glass-card .flex.items-center.justify-between,
+.glass-card .flex.items-center {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Keep numeric / big-text values from creating horizontal overflow at
+   any zoom level. */
+.glass-card .text-2xl,
+.glass-card .text-3xl,
+.glass-card .text-4xl,
+.glass-card .text-5xl,
+.glass-card .text-6xl {
+  line-height: 1.15;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Code-style strings (e.g. modal formulas) should always wrap. */
+.ratio-modal-panel .font-mono,
+.ratio-formula-box {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* The page may be wider than the viewport at extreme zoom on tall
+   preset rows or wide tables. Allow horizontal scrolling without
+   breaking the body. */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Table container already has overflow-x:auto; reinforce that nothing
+   inside the table forces the body to grow horizontally. */
+.table-container {
+  overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;
+}
+
+/* Theme toggle: shrink slightly at very high zoom so it does not cover
+   other controls. */
+.theme-toggle {
+  position: fixed;
+  top: clamp(0.75rem, 2vw, 1.5rem);
+  left: clamp(0.75rem, 2vw, 1.5rem);
+  z-index: 100;
+  width: clamp(2.25rem, 6vw, 2.75rem);
+  height: clamp(2.25rem, 6vw, 2.75rem);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: clamp(0.9rem, 2.4vw, 1.1rem);
+  backdrop-filter: blur(12px);
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   - Mobile-first approach with clear desktop/mobile interfaces
+   - Handles "Desktop Site" on mobile and inspect mobile views
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  /* Tablet adjustments */
+  .logo-placeholder {
+    width: 96px;
+    height: 96px;
+  }
+  
+  h1.text-4xl {
+    font-size: 2rem;
+  }
+  
+  h1.text-5xl {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile portrait adjustments */
+  .sim-cell {
+    min-width: 50px;
+    height: 50px;
+    font-size: 0.875rem;
+  }
+  
+  .main-container {
+    padding: 0.75rem;
+  }
+  
+  .header {
+    padding-top: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .logo-placeholder {
+    width: 80px;
+    height: 80px;
+  }
+  
+  /* Input section grid: stack all columns on mobile */
+  .input-section-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  /* Playback controls stack on mobile */
+  .playback-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .playback-controls button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .playback-step-input {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================================
+   EXTRA HIGH-ZOOM BREAKPOINTS
+   At very high zoom the effective viewport becomes narrow even on a
+   desktop. These rules stack / shrink elements so nothing overlaps.
+   ============================================================ */
+
+@media (max-width: 480px) {
+  /* Stack the action buttons instead of side-by-side. */
+  .action-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .action-bar button {
+    width: 100%;
+  }
+  /* Stack the algorithm selection cards. */
+  .algo-card {
+    padding: 0.6rem !important;
+  }
+  /* Make section icons smaller and titles tighter. */
+  .section-title {
+    font-size: 1.05rem;
+  }
+  .header-title,
+  .gradient-text {
+    line-height: 1.1;
+    font-size: 1.75rem !important;
+  }
+  /* Ensure the logo doesn't grow too tall. */
+  .logo-placeholder {
+    width: 72px !important;
+    height: 72px !important;
+  }
+  
+  /* Table adjustments for tiny screens */
+  .table-container {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .sim-cell {
+    min-width: 44px; /* Apple recommended minimum touch target */
+    height: 44px;
+  }
+  
+  /* History dropdown max height adjusted for small screens */
+  #historyDropdown {
+    max-height: 40vh;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Compress card padding at extreme zoom / tiny screens. */
+  .glass-card {
+    padding: 0.85rem !important;
+  }
+  .card-hit, .card-fault,
+  .card-ratio-hit, .card-ratio-fault {
+    padding: 0.85rem !important;
+  }
+  /* Smaller preset buttons. */
+  .preset-btn {
+    padding: 0.3rem 0.55rem !important;
+    font-size: 0.65rem !important;
+  }
+}
+
+/* ============================================================
+   RATIO EXPLANATION MODAL
+   ============================================================ */
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.ratio-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.ratio-modal-panel {
+  position: relative;
+  width: 100%;
+  /* Cap by viewport width so the panel never overflows at high zoom
+     levels (or on small screens). 92vw leaves a small margin. */
+  max-width: min(28rem, 92vw);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color-strong);
+  border-radius: 1rem;
+  padding: clamp(1rem, 4vw, 1.75rem);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  /* Ensure long formula text wraps inside the modal at high zoom. */
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ratio-modal-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--btn-reset-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ratio-modal-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--text-primary);
+}
+
+.ratio-formula-box {
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid var(--border-color);
+  border-radius: 0.6rem;
+  padding: 0.75rem 0.9rem;
+}
+
+[data-theme="light"] .ratio-formula-box {
+  background: rgba(241, 245, 249, 0.7);
+}
+
+[data-theme="light"] .ratio-modal-backdrop {
+  background: rgba(15, 23, 42, 0.45);
+}

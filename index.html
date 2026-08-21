@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>FrameIQ</title>
+  <link rel="icon" type="image/x-icon" href="assets/logo.ico"> 
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css?v=5.1">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            slate: {
+              750: '#283548',
+              850: '#151f32',
+              950: '#020617',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">
+    <i class="fas fa-sun" id="themeIcon"></i>
+  </button>
+
+  <!-- Background orbs -->
+  <div class="bg-gradient-orb" style="width: 600px; height: 600px; top: -200px; left: -200px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);"></div>
+  <div class="bg-gradient-orb" style="width: 500px; height: 500px; bottom: -100px; right: -100px; background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);"></div>
+
+  <!-- Grid background -->
+  <div class="fixed inset-0 bg-grid opacity-50 pointer-events-none z-0"></div>
+
+  <!-- Main Container -->
+  <div class="main-container relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 lg:pt-12 pb-6">
+    <!-- Header -->
+    <header class="header text-center mb-10 animate-fade-in-up">
+      <div class="logo-placeholder mx-auto mb-5" aria-label="Group 2 logo placeholder">
+        <img src="assets/logo.png" alt="Group 2 Logo" class="logo-img">
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight">
+        <span class="gradient-text">FrameIQ Virtual Memory Lab</span>
+        <br>
+        <span class="header-title">Page Replacement Algorithm Simulator</span>
+      </h1>
+      <p class="text-lg max-w-2xl mx-auto subtitle-text">
+        Visualize and understand how algorithms manage memory frames with interactive step-by-step simulation.
+      </p>
+    </header>
+
+    <!-- Input Section -->
+    <section id="inputSection" class="mb-8 animate-fade-in-up stagger-2">
+      <div class="glass-card rounded-2xl p-6 lg:p-8">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-lg">
+            <i class="fas fa-sliders-h"></i>
+          </div>
+          <h2 class="text-xl font-bold section-title">Configuration</h2>
+        </div>
+
+        <div class="input-section-grid grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Number of Frames -->
+          <div class="lg:col-span-3">
+            <label for="frameCount" class="block text-sm font-semibold mb-2 label-text">
+              Number of Frames
+              <span class="tooltip-container inline-block ml-1">
+                <i class="fas fa-info-circle text-xs info-icon"></i>
+                <span class="tooltip-text">Memory frames available for page storage</span>
+              </span>
+            </label>
+            <div class="relative">
+              <button id="frameDecrement" class="absolute left-1 top-1 bottom-1 w-10 rounded-lg font-bold text-xl border flex items-center justify-center btn-reset z-10" aria-label="Decrement frame count">-</button>
+              <input
+  type="text" 
+  id="frameCount" 
+  min="1" 
+  max="100" 
+  value="3" 
+  placeholder="3" 
+  class="w-full border rounded-xl px-12 py-3 font-semibold text-center text-lg input-glow focus:border-indigo-400 focus:outline-none transition-all frame-input">
+              <button id="frameIncrement" class="absolute right-1 top-1 bottom-1 w-10 rounded-lg font-bold text-xl border flex items-center justify-center btn-reset z-10" aria-label="Increment frame count">+</button>
+            </div>
+            <p class="text-xs mt-1.5 ml-1 helper-text">Enter a positive number (max 100)</p>
+          </div>
+
+          <!-- Reference String -->
+          <div class="lg:col-span-6">
+            <label for="referenceString" class="block text-sm font-semibold mb-2 label-text">
+              Reference String
+              <span class="tooltip-container inline-block ml-1">
+                <i class="fas fa-info-circle text-xs info-icon"></i>
+                <span class="tooltip-text">Space or comma-separated pages - numeric OR alphabetic only</span>
+              </span>
+              <span id="inputModeBadge" class="mode-badge mode-empty ml-2">Auto-detect</span>
+            </label>
+            <div class="relative">
+              <input
+                type="text"
+                id="referenceString"
+                placeholder="e.g., 7, 0, 1, 2, 0, 3, 0, 4, 2, 3 (or A, B, C, D)"
+                class="w-full border rounded-xl px-4 pr-12 py-3 font-medium input-glow focus:border-indigo-400 focus:outline-none transition-all ref-input"
+              >
+              <button id="historyToggle" class="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer z-10" title="Input History">
+                <i class="fas fa-stream input-icon"></i>
+              </button>
+              <div id="historyDropdown" class="absolute top-full left-0 right-0 mt-1 glass-card rounded-xl p-2 z-50 hidden max-h-60 overflow-y-auto">
+                <div id="historyList" class="space-y-1">
+                  <!-- History items will go here -->
+                </div>
+                <div class="border-t border-gray-300 dark:border-gray-700 mt-2 pt-2">
+                  <button id="clearHistoryBtn" class="text-xs text-red-500 hover:text-red-700 w-full text-left">Clear History</button>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mt-1.5 ml-1">
+              <p class="text-xs helper-text">Separate values with commas or spaces &mdash; <strong>numeric only</strong> or <strong>alphabetic only</strong></p>
+              <button onclick="clearInputMode()" class="text-xs hover:underline helper-text reset-type-btn" title="Reset input type detection">
+                <i class="fas fa-undo mr-1"></i>Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Algorithm Selection -->
+          <div class="lg:col-span-3">
+            <label class="block text-sm font-semibold mb-2 label-text">Algorithm</label>
+            <div class="space-y-2">
+              <!-- FIFO Card -->
+              <div id="fifoCard" class="algo-card selected glass-card rounded-xl p-3 flex items-center gap-3" onclick="selectAlgorithm('FIFO')">
+                <div class="relative">
+                  <div class="algo-radio w-5 h-5 rounded-full border-2 flex items-center justify-center"></div>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-sm algo-name">FIFO</div>
+                  <div class="text-xs algo-desc">First-In-First-Out</div>
+                </div>
+                <i class="fas fa-arrow-right-arrow-left text-sm algo-icon"></i>
+              </div>
+
+              <!-- LRU Card -->
+              <div id="lruCard" class="algo-card glass-card rounded-xl p-3 flex items-center gap-3" onclick="selectAlgorithm('LRU')">
+                <div class="relative">
+                  <div class="algo-radio w-5 h-5 rounded-full border-2 flex items-center justify-center"></div>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-sm algo-name">LRU</div>
+                  <div class="text-xs algo-desc">Least Recently Used</div>
+                </div>
+                <i class="fas fa-clock-rotate-left text-sm algo-icon"></i>
+              </div>
+            </div>
+            <input type="hidden" id="algorithm" value="FIFO">
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 mt-6 pt-6 justify-center items-center action-bar">
+          <button
+            onclick="runSimulation()"
+            class="btn-primary whitespace-nowrap py-3.5 px-6 rounded-xl text-white font-bold text-lg flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-play"></i>
+            Run Simulation
+          </button>
+          <button
+            onclick="resetSimulation()"
+            class="btn-reset whitespace-nowrap py-3.5 px-6 rounded-xl font-semibold border flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-rotate-left"></i>
+            Reset
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preset Reference Strings -->
+    <section class="mb-8 animate-fade-in-up stagger-3">
+      <div class="flex flex-wrap gap-2 justify-center items-center">
+        <span class="text-sm flex items-center mr-2 helper-text">
+          <i class="fas fa-bookmark mr-1.5"></i> Quick presets:
+        </span>
+        <button onclick="generateRandomPreset(20, 'numeric')" class="preset-btn text-xs px-3 py-1.5 rounded-lg transition-all">
+          <i class="fas fa-dice mr-1"></i>Classic 20 Random Numeric
+        </button>
+        <button onclick="generateRandomPreset(12, 'numeric')" class="preset-btn text-xs px-3 py-1.5 rounded-lg transition-all">
+          <i class="fas fa-dice mr-1"></i>Random Numeric (12)
+        </button>
+        <button onclick="generateRandomPreset(15, 'alphabet')" class="preset-btn text-xs px-3 py-1.5 rounded-lg transition-all">
+          <i class="fas fa-dice mr-1"></i>Random Alphabet (15)
+        </button>
+      </div>
+    </section>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="hidden text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-500 border-t-transparent"></div>
+      <p class="mt-4 font-medium loading-text">Simulating...</p>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsSection" class="hidden-initial">
+      <!-- Summary Cards -->
+      <section class="mb-8 animate-fade-in-up">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <h2 class="text-xl font-bold section-title">Summary Metrics</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <!-- Frames Used -->
+          <div id="summaryFrameCountCard" class="glass-card rounded-2xl p-5 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:shadow-lg" onclick="openInfoModal('frames')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInfoModal('frames')}">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium legend-text-new">
+                Number of Frames
+                <i class="fas fa-circle-question ml-1 text-xs opacity-70"></i>
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                <i class="fas fa-layer-group text-sm legend-text-new"></i>
+              </div>
+            </div>
+            <div id="summaryFrameCount" class="text-2xl lg:text-3xl font-extrabold new-cell-text">0</div>
+            <div class="text-xs mt-1 helper-text">Memory slots used by the simulation</div>
+          </div>
+
+          <!-- Reference String Length -->
+          <div id="summaryRefStringCard" class="glass-card rounded-2xl p-5 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:shadow-lg" onclick="openInfoModal('refString')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInfoModal('refString')}">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium legend-text-new">
+                Reference String Length
+                <i class="fas fa-circle-question ml-1 text-xs opacity-70"></i>
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                <i class="fas fa-list-ol text-sm legend-text-new"></i>
+              </div>
+            </div>
+            <div id="summaryRefString" class="text-2xl lg:text-3xl font-extrabold new-cell-text">0</div>
+            <div class="text-xs mt-1 helper-text">Total number of page references</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Hit Count -->
+          <div id="hitCountCard" class="card-hit glass-card rounded-2xl p-5 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:shadow-lg" onclick="openInfoModal('hitCount')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInfoModal('hitCount')}">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium card-hit-label">
+                Total Hits
+                <i class="fas fa-circle-question ml-1 text-xs opacity-70"></i>
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                <i class="fas fa-check text-sm card-hit-accent"></i>
+              </div>
+            </div>
+            <div id="hitCount" class="text-3xl lg:text-4xl font-extrabold card-hit-accent">0</div>
+            <div class="text-xs mt-1 card-hit-caption">Pages found in memory</div>
+          </div>
+
+          <!-- Fault Count -->
+          <div id="faultCountCard" class="card-fault glass-card rounded-2xl p-5 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:shadow-lg" onclick="openInfoModal('faultCount')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInfoModal('faultCount')}">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium card-fault-label">
+                Total Faults
+                <i class="fas fa-circle-question ml-1 text-xs opacity-70"></i>
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                <i class="fas fa-xmark text-sm card-fault-accent"></i>
+              </div>
+            </div>
+            <div id="faultCount" class="text-3xl lg:text-4xl font-extrabold card-fault-accent">0</div>
+            <div class="text-xs mt-1 card-fault-caption">Pages loaded into memory</div>
+          </div>
+
+          <!-- Hit Ratio -->
+          <div id="hitRatioCard" class="card-ratio-hit glass-card rounded-2xl p-5 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:shadow-lg" onclick="openInfoModal('hitRatio')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInfoModal('hitRatio')}">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium card-ratio-hit-label">
+                Hit Ratio
+                <i class="fas fa-circle-question ml-1 text-xs opacity-70"></i>
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
+                <i class="fas fa-percent text-sm card-ratio-hit-accent"></i>
+              </div>
+            </div>
+            <div id="hitRatio" class="text-3xl lg:text-4xl font-extrabold card-ratio-hit-accent">0.00</div>
+            <div class="text-xs mt-1 card-ratio-hit-caption">Percentage of hits</div>
+          </div>
+
+          <!-- Fault Ratio -->
+          <div id="faultRatioCard" class="card-ratio-fault glass-card rounded-2xl p-5 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:shadow-lg" onclick="openInfoModal('faultRatio')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openInfoModal('faultRatio')}">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium card-ratio-fault-label">
+                Fault Ratio
+                <i class="fas fa-circle-question ml-1 text-xs opacity-70"></i>
+              </span>
+              <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                <i class="fas fa-percent text-sm card-ratio-fault-accent"></i>
+              </div>
+            </div>
+            <div id="faultRatio" class="text-3xl lg:text-4xl font-extrabold card-ratio-fault-accent">0.00</div>
+            <div class="text-xs mt-1 card-ratio-fault-caption">Percentage of faults</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visualization Table -->
+      <section class="mb-8 animate-fade-in-up stagger-2">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+            <i class="fas fa-table"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold section-title">Step-by-Step Simulation</h2>
+            <p class="text-sm helper-text">Detailed memory state changes, hits, faults, and frame updates for each step</p>
+          </div>
+          <!-- Legend -->
+          <div class="ml-auto hidden sm:flex items-center gap-4 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="legend-dot bg-emerald-500/30 border border-emerald-500/60"></span>
+              <span class="legend-text-hit">Hit</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="legend-dot bg-red-500/30 border border-red-500/60"></span>
+              <span class="legend-text-fault">Fault</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="legend-dot bg-indigo-500/30 border border-indigo-500/60"></span>
+              <span class="legend-text-new">New</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 lg:p-6 overflow-hidden">
+          <div class="table-container" id="simulationTableContainer">
+            <!-- Table will be generated here -->
+          </div>
+        </div>
+
+        <!-- Mobile Legend -->
+        <div class="flex sm:hidden items-center justify-center gap-6 mt-4 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="legend-dot bg-emerald-500/30 border border-emerald-500/60"></span>
+            <span class="legend-text-hit">Hit</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="legend-dot bg-red-500/30 border border-red-500/60"></span>
+            <span class="legend-text-fault">Fault</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="legend-dot bg-indigo-500/30 border border-indigo-500/60"></span>
+            <span class="legend-text-new">New</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Playback Controls -->
+      <section class="mb-8 animate-fade-in-up">
+        <div class="playback-controls glass-card rounded-2xl p-4 flex flex-wrap items-center justify-center gap-3">
+          <button id="prevBtn" class="px-4 py-2 rounded-xl font-semibold border flex items-center gap-2" title="Previous Step">
+            <i class="fas fa-step-backward"></i> Previous
+          </button>
+          <button id="playPauseBtn" class="px-4 py-2 rounded-xl font-semibold border flex items-center gap-2 btn-primary text-white" title="Play/Pause">
+            <i class="fas fa-play" id="playPauseIcon"></i> <span id="playPauseText">Play</span>
+          </button>
+          <button id="nextBtn" class="px-4 py-2 rounded-xl font-semibold border flex items-center gap-2" title="Next Step">
+            Next <i class="fas fa-step-forward"></i>
+          </button>
+          <div class="playback-step-input flex items-center gap-2 text-sm">
+            <span class="text-sm helper-text">Step:</span>
+            <input id="stepInput" type="number" min="1" value="1" class="w-16 px-2 py-1 rounded border text-center font-semibold">
+            <span id="stepTotal" class="helper-text">/ 0</span>
+          </div>
+          <div class="w-px h-8 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+          <button id="scrollLockBtn" class="px-3 py-2 rounded-xl font-semibold border flex items-center gap-2" title="Lock/Unlock table scroll sync">
+            <i class="fas fa-lock" id="scrollLockIcon"></i> <span id="scrollLockText">Scroll Locked</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Solution -->
+      <section class="mb-8 animate-fade-in-up stagger-3">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold">
+            <i class="fas fa-list-ol"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold section-title">Solution</h2>
+            <p class="text-sm helper-text">Solution at each step showing eviction order</p>
+          </div>
+          <!-- Legend -->
+          <div class="ml-auto hidden sm:flex items-center gap-4 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="legend-dot" style="background: var(--ref-cell-bg); border: 1px solid var(--ref-cell-border);"></span>
+              <span class="legend-text-secondary">Reference page</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="legend-dot" style="background: var(--frame-filled-bg); border: 1px solid var(--frame-filled-border);"></span>
+              <span class="legend-text-secondary">In queue</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-4 lg:p-6 overflow-hidden">
+          <div class="table-container" id="queueTrackerContainer">
+            <!-- Queue tracker table will be generated here -->
+          </div>
+        </div>
+
+        <!-- Mobile Legend -->
+        <div class="flex sm:hidden items-center justify-center gap-4 mt-4 text-xs flex-wrap">
+          <div class="flex items-center gap-2">
+            <span class="legend-dot" style="background: var(--ref-cell-bg); border: 1px solid var(--ref-cell-border);"></span>
+            <span class="legend-text-secondary">Reference</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="legend-dot" style="background: var(--frame-filled-bg); border: 1px solid var(--frame-filled-border);"></span>
+            <span class="legend-text-secondary">In queue</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Algorithm Explanation -->
+      <section id="explanationSection" class="mb-6 animate-fade-in-up stagger-4">
+        <div class="explanation-box rounded-2xl p-6">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i class="fas fa-lightbulb text-indigo-400"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg mb-2 algo-title-text" id="algoTitle">FIFO (First-In-First-Out)</h3>
+              <p class="leading-relaxed text-sm lg:text-base algo-body-text" id="algoExplanation">
+                This algorithm replaces the oldest page in memory. The page that has been in memory the longest is selected for replacement when a new page needs to be loaded.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 text-sm footer-text">
+      <p>Compiled by: Jasper Enjambre Momo</p>
+    </footer>
+  </div>
+
+  <!-- Ratio Explanation Modal -->
+  <div id="ratioModal" class="ratio-modal-backdrop" onclick="if(event.target===this)closeRatioModal()" role="dialog" aria-modal="true" aria-labelledby="ratioModalTitle" style="display:none;">
+    <div class="ratio-modal-panel animate-scale-in">
+      <button class="ratio-modal-close" onclick="closeRatioModal()" aria-label="Close">
+        <i class="fas fa-xmark"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4">
+        <div id="ratioModalIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-white">
+          <i class="fas fa-percent"></i>
+        </div>
+        <h3 id="ratioModalTitle" class="text-xl font-bold section-title">How is this computed?</h3>
+      </div>
+      <p id="ratioModalDesc" class="text-sm mb-4 algo-body-text"></p>
+      <div class="ratio-formula-box mb-4">
+        <div class="text-xs uppercase tracking-wider mb-1 helper-text">Formula</div>
+        <div id="ratioModalFormula" class="font-mono text-base font-semibold" style="color: var(--text-primary);"></div>
+      </div>
+      <div class="ratio-formula-box mb-4">
+        <div class="text-xs uppercase tracking-wider mb-1 helper-text">Worked example</div>
+        <div id="ratioModalExample" class="text-sm font-medium" style="color: var(--text-primary);"></div>
+      </div>
+      <div class="ratio-formula-box">
+        <div class="text-xs uppercase tracking-wider mb-1 helper-text">Result</div>
+        <div class="flex items-baseline gap-2">
+          <span id="ratioModalResult" class="text-2xl font-extrabold"></span>
+          <span id="ratioModalResultNote" class="text-xs helper-text"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/theme.js?v=5.1"></script>
+  <script src="js/validation.js?v=5.1"></script>
+  <script src="js/ui.js?v=5.1"></script>
+  <script src="js/tableRenderer.js?v=5.1"></script>
+  <script src="js/main.js?v=5.1"></script>
+</body>
+</html>
