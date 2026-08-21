@@ -1,6 +1,6 @@
 # FrameIQ
 
-**Live Production Link:** [Visit the FrameIQ Live Website](https://frameiq.site.je)
+**Live Production Link:** [Visit FrameIQ Live Website](https://frameiq.site.je)
 
 ## Overview
 
